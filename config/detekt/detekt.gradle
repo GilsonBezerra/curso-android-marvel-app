@@ -1,0 +1,38 @@
+apply plugin: 'io.gitlab.arturbosch.detekt'
+
+project.afterEvaluate {
+    tasks.named("preBuild") {
+        dependsOn("detekt")
+    }
+}
+
+dependencies {
+    detektPlugins "io.gitlab.arturbosch.detekt:detekt-formatting:1.23.0-RC1"
+}
+
+detekt {
+    toolVersion = "$detekt_version"
+    def inputDirFiles = []
+    rootProject.subprojects.each {modules ->
+        inputDirFiles << "$modules.projectDir/src/main/java"
+    }
+    source = files(inputDirFiles)
+    config = files("$rootDir/config/detekt/detekt.yml")
+    autoCorrect = true
+
+    reports {
+        xml {
+            required = true
+            destination = file("$buildDir/reports/detekt/detekt.xml")
+        }
+        html {
+            required = true
+            destination = file("$buildDir/reports/detekt/detekt.html")
+        }
+        txt {
+            required = true
+            destination = file("$buildDir/reports/detekt/detekt.txt")
+        }
+
+    }
+}
