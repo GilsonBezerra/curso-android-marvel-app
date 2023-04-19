@@ -16,6 +16,7 @@ detekt {
     rootProject.subprojects.each {modules ->
         inputDirFiles << "$modules.projectDir/src/main/java"
     }
+
     source = files(inputDirFiles)
     config = files("$rootDir/config/detekt/detekt.yml")
     autoCorrect = true
